@@ -1,9 +1,16 @@
 from wtforms.validators import DataRequired, Length, Email, UUID, MacAddress, EqualTo, Regexp
 
+validation_types = {DataRequired: {'type': 'notEmpty', 'attributes': {'message': 'message'}},
+                    Length: {'type': 'stringLength',
+                             'attributes': {'min': 'min', 'max': 'max', 'message': 'message'}},
+                    Email: {'type': 'emailAddress', 'attributes': {'message': 'message'}},
+                    UUID: {'type': 'uuid', 'attributes': {'message': 'message'}},
+                    MacAddress: {'type': 'mac', 'attributes': {'message': 'message'}},
+                    EqualTo: {'type': 'identical', 'attributes': {'message': 'message', 'fieldname': 'field'}},
+                    Regexp: {'type': 'regexp', 'attributes': {'message': 'message', 'regex': 'regexp'}}}
 
-def convert_form_to_json(form):
 
-    def convert_field_to_json(field):
+def convert_field_to_json(field):
         validations = {}
         for val in field.validators:
             validation_type = val.__class__
@@ -21,14 +28,8 @@ def convert_form_to_json(form):
                     raise
         return validations
 
-    validation_types = {DataRequired: {'type': 'notEmpty', 'attributes': {'message': 'message'}},
-                        Length: {'type': 'stringLength',
-                                 'attributes': {'min': 'min', 'max': 'max', 'message': 'message'}},
-                        Email: {'type': 'emailAddress', 'attributes': {'message': 'message'}},
-                        UUID: {'type': 'uuid', 'attributes': {'message': 'message'}},
-                        MacAddress: {'type': 'mac', 'attributes': {'message': 'message'}},
-                        EqualTo: {'type': 'identical', 'attributes': {'message': 'message', 'fieldname': 'field'}},
-                        Regexp: {'type': 'regexp', 'attributes': {'message': 'message', 'regex': 'regexp'}}}
+
+def convert_form_to_json(form):
     output = {}
     for field in form:
         if not field.validators:
